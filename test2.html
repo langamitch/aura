@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarah & James | Our Journey</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Montserrat:wght@300;400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            line-height: 1.6;
+            color: #000;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+        
+        body.loading {
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+        
+        /* Loader Styles */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loader-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 36px;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+        }
+        
+        .progress-container {
+            width: 300px;
+            height: 2px;
+            background-color: #ebebeb;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #000;
+            transition: width 0.4s ease;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            border-right: 1px solid #ebebeb;
+            padding: 40px 20px;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-hidden {
+            transform: translateX(-250px);
+        }
+        
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            font-size: 26px;
+            letter-spacing: 2px;
+            text-decoration: none;
+            color: #000;
+            display: block;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+        
+        .sidebar-nav {
+            margin-bottom: 40px;
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-nav a {
+            text-decoration: none;
+            color: #000;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            display: block;
+            padding: 5px 0;
+        }
+        
+        .sidebar-nav a:hover {
+            color: #888;
+        }
+        
+        .sidebar-footer {
+            position: absolute;
+            bottom: 40px;
+            width: calc(100% - 40px);
+            text-align: center;
+            font-size: 10px;
+            color: #888;
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            background: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        
+        .mobile-menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background: #000;
+            margin: 5px 0;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .main-content-full {
+            margin-left: 0;
+        }
+        
+        .hero {
+            height: 90vh;
+            background-image: url('/api/placeholder/1600/900');
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0));
+        }
+        
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            z-index: 2;
+            width: 80%;
+        }
+        
+        .hero-text h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+        
+        .hero-text p {
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+        }
+        
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        
+        h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            letter-spacing: 1.5px;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            line-height: 1.8;
+        }
+        
+        .section-title {
+            text-align: center;
+            padding: 100px 0 60px;
+            background-color: #fff;
+        }
+        
+        /* Content Layout Styles */
+        .content-section {
+            padding: 80px 0;
+        }
+        
+        .content-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 100px;
+        }
+        
+        .content-row:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .content-text {
+            flex: 1;
+            padding: 0 60px;
+        }
+        
+        .content-text h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .content-image {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .content-image img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.5s ease;
+        }
+        
+        .content-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Gallery Popup Styles */
+        .gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .gallery-container {
+            width: 80%;
+            height: 80%;
+            position: relative;
+        }
+        
+        .gallery-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .gallery-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gallery-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .gallery-prev, .gallery-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background 0.3s ease;
+        }
+        
+        .gallery-prev:hover, .gallery-next:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .gallery-prev {
+            left: -80px;
+        }
+        
+        .gallery-next {
+            right: -80px;
+        }
+        
+        .gallery-counter {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        .gallery-thumbnails {
+            position: absolute;
+            bottom: -100px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .gallery-thumbnail {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-thumbnail.active {
+            opacity: 1;
+            border: 2px solid #fff;
+        }
+        
+        /* Alternate Background */
+        .alternate-bg {
+            background-color: #ebebeb;
+        }
+        
+        .spacer {
+            height: 100px;
+            background-color: #fff;
+        }
+        
+        .spacer-small {
+            height: 50px;
+            background-color: #fff;
+        }
+        
+        .quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-style: italic;
+            line-height: 1.4;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 20px;
+            text-align: center;
+        }
+        
+        footer {
+            padding: 80px 0;
+            text-align: center;
+            font-size: 12px;
+            color: #000;
+            background-color: #ebebeb;
+            letter-spacing: 1px;
+        }
+        
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .slide-in-left.visible, .slide-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .content-row {
+                flex-direction: column !important;
+                margin-bottom: 60px;
+            }
+            
+            .content-text {
+                padding: 40px;
+                order: 2;
+            }
+            
+            .content-image {
+                order: 1;
+                width: 100%;
+            }
+            
+            .gallery-prev {
+                left: -60px;
+            }
+            
+            .gallery-next {
+                right: -60px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .sidebar {
+                transform: translateX(-250px);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .hero-text h1 {
+                font-size: 40px;
+            }
+            
+            .hero-text p {
+                font-size: 16px;
+            }
+            
+            .section-title, .text-section {
+                padding: 60px 20px;
+            }
+            
+            .quote {
+                padding: 60px 20px;
+                font-size: 22px;
+            }
+            
+            .spacer, .spacer-small {
+                height: 30px;
+            }
+            
+            .hero {
+                height: 60vh;
+            }
+            
+            .gallery-container {
+                width: 90%;
+            }
+            
+            .gallery-prev, .gallery-next {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .gallery-prev {
+                left: 10px;
+            }
+            
+            .gallery-next {
+                right: 10px;
+            }
+            
+            .gallery-thumbnails {
+                bottom: -80px;
+            }
+            
+            .gallery-thumbnail {
+                width: 40px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body class="loading">
+    <!-- Loader -->
+    <div id="loader">
+        <div class="loader-logo">Sarah & James</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="progress-text" id="progress-text">0%</div>
+    </div>
+    
+    <button class="mobile-menu-toggle" id="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <a href="#" class="logo">Sarah & James</a>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#our-story">Our Story</a></li>
+                    <li><a href="#the-wedding">The Wedding</a></li>
+                    <li><a href="#honeymoon">Honeymoon</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <p>© 2025 Sarah & James</p>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <div class="hero">
+                <div class="hero-text">
+                    <h1>Sarah & James</h1>
+                    <p>Our journey of love and adventure</p>
+                </div>
+            </div>
+            
+            <section id="our-story" class="section-title fade-in">
+                <h2>Our Story</h2>
+            </section>
+            
+            <section class="content-section">
+                <div class="content-row">
+                    <div class="content-text slide-in-left">
+                        <h3>How We Met</h3>
+                        <p>It was a chance encounter at a small café in the city. Sarah was reading her favorite book when James accidentally spilled his coffee nearby. What started as an awkward apology turned into hours of conversation and laughter.</p>
+                        <p>Sometimes the most beautiful stories begin in the most unexpected ways.</p>
+                    </div>
+                    <div class="content-image slide-in-right" data-gallery="meeting">
+                        <img src="/api/placeholder/800/600" alt="Sarah and James meeting" />
+                    </div>
+                </div>
+                
+                <div class="content-row">
+                    <div class="content-text slide-in-right">
+                        <h3>The Proposal</h3>
+                        <p>After two years together, James planned a surprise hiking trip to the mountains where they had their first vacation together. At sunset, overlooking the valley below, he got down on one knee.</p>
+                        <p>With tears in her eyes, Sarah said yes as the golden light surrounded them.</p>
+                    </div>
+                    <div class="content-image slide-in-left" data-gallery="proposal">
+                        <img src="/api/placeholder/800/600" alt="The proposal" />
+                    </div>
+                </div>
+            </section>
+            
+            <div class="quote alternate-bg fade-in">
+                "True love stories never have endings."
+            </div>
+            
+            <section id="the-wedding" class="section-title fade-in">
+                <h2>The Wedding</h2>
+            </section>
+            
+            <section class="content-section">
+                <div class="content-row">
+                    <div class="content-text slide-in-left">
+                        <h3>The Ceremony</h3>
+                        <p>We chose a small vineyard estate with stunning views for our ceremony. As the sun began to set, casting a warm glow over the gathered friends and family, we exchanged our vows.</p>
+                        <p>The gentle breeze carried flower petals through the air as we said "I do" under an arch of white roses and greenery.</p>
+                    </div>
+                    <div class="content-image slide-in-right" data-gallery="ceremony">
+                        <img src="/api/placeholder/800/600" alt="Wedding ceremony" />
+                    </div>
+                </div>
+                
+                <div class="content-row">
+                    <div class="content-text slide-in-right">
+                        <h3>The Celebration</h3>
+                        <p>Our reception was filled with joy, laughter, and dancing that continued well into the night. Under strings of fairy lights and stars, we celebrated with those closest to us.</p>
+                        <p>From heartfelt speeches to spontaneous dance-offs, every moment felt magical and perfectly us.</p>
+                    </div>
+                    <div class="content-image slide-in-left" data-gallery="reception">
+                        <img src="/api/placeholder/800/600" alt="Wedding reception" />
+                    </div>
+                </div>
+            </section>
+            
+            <section id="honeymoon" class="section-title alternate-bg fade-in">
+                <h2>Honeymoon</h2>
+            </section>
+            
+            <section class="content-section alternate-bg">
+                <div class="content-row">
+                    <div class="content-text slide-in-left">
+                        <h3>Bali Paradise</h3>
+                        <p>For our honeymoon, we chose the island paradise of Bali. Our private villa overlooked the pristine ocean, with direct access to white sand beaches and crystal-clear waters.</p>
+                        <p>Each morning began with sunrise yoga and fresh tropical fruits, followed by adventures exploring the island's hidden treasures.</p>
+                    </div>
+                    <div class="content-image slide-in-right" data-gallery="bali">
+                        <img src="/api/placeholder/800/600" alt="Bali villa" />
+                    </div>
+                </div>
+                
+                <div class="content-row">
+                    <div class="content-text slide-in-right">
+                        <h3>Island Adventures</h3>
+                        <p>We spent our days exploring ancient temples, hiking to hidden waterfalls, and swimming in secluded coves. Each experience brought us closer together as we created memories to last a lifetime.</p>
+                        <p>The local culture, delicious cuisine, and breathtaking landscapes made every day an adventure we'll never forget.</p>
+                    </div>
+                    <div class="content-image slide-in-left" data-gallery="adventures">
+                        <img src="/api/placeholder/800/600" alt="Island adventures" />
+                    </div>
+                </div>
+            </section>
+            
+            <section id="gallery" class="section-title fade-in">
+                <h2>Gallery</h2>
+            </section>
+            
+            <section class="content-section">
+                <div class="content-row">
+                    <div class="content-text slide-in-left">
+                        <h3>Our Favorite Moments</h3>
+                        <p>These photographs capture the essence of our journey together. From quiet intimate moments to grand celebrations, each image tells part of our continuing story.</p>
+                        <p>Click on any image to see more from that collection of memories.</p>
+                    </div>
+                    <div class="content-image slide-in-right" data-gallery="moments">
+                        <img src="/api/placeholder/800/600" alt="Favorite moments" />
+                    </div>
+                </div>
+            </section>
+            
+            <footer>
+                <p>© 2025 Sarah & James | Our Journey Together</p>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- Gallery Modal -->
+    <div class="gallery-modal" id="gallery-modal">
+        <div class="gallery-container">
+            <button class="gallery-close" id="gallery-close">×</button>
+            <div class="gallery-content">
+                <img src="" alt="Gallery image" class="gallery-image" id="gallery-current-image">
+            </div>
+            <button class="gallery-prev" id="gallery-prev">❮</button>
+            <button class="gallery-next" id="gallery-next">❯</button>
+            <div class="gallery-counter" id="gallery-counter">1/5</div>
+            <div class="gallery-thumbnails" id="gallery-thumbnails"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Gallery data
+        const galleries = {
+            meeting: [
+                '/api/placeholder/800/600',
+                '/api/placeholder/800/600?1',
+                '/api/placeholder/800/600?2',
+                '/api/placeholder/800/600?3'
+            ],
+            proposal: [
+                '/api/placeholder/800/600',
+                '/api/placeholder/800/600?1',
+                '/api/placeholder/800/600?2',
+                '/api/placeholder/800/600?3'
+            ],
+            ceremony: [
+                '/api/placeholder/800/600',
+                '/api/placeholder/800/600?1',
+                '/api/placeholder/800/600?2',
+                '/api/placeholder/800/600?3',
+                '/api/placeholder/800/600?4'
+            ],
+            reception: [
+                '/api/placeholder/800/600',
+                '/api/placeholder/800/600?1',
+                '/api/placeholder/800/600?2',
+                '/api/placeholder/800/600?3'
+            ],
+            bali: [
+                '/api/placeholder/800/600',
+                '/api/placeholder/800/600?1',
+                '/api/placeholder/800/600?2',
+                '/api/placeholder/800/600?3'
+            ],
+            adventures: [
+                '/api/placeholder/800/600',
+                '/api/placeholder/800/600?1',
+                '/api/placeholder/800/600?2',
+                '/api/placeholder/800/600?3'
+            ],
+            moments: [
+                '/api/placeholder/800/600',
+                '/api/placeholder/800/600?1',
+                '/api/placeholder/800/600?2',
+                '/api/placeholder/800/600?3',
+                '/api/placeholder/800/600?4'
+            ]
+        };
+        
+        // Loader
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('loader');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            let progress = 0;
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.floor(progress) + '%';
+                
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loader.classList.add('loader-hidden');
+                        document.body.classList.remove('loading');
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                            initAnimations();
+                        }, 500);
+                    }, 500);
+                }
+            }, 200);
+            
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+            
+            // Navigation smooth scroll
+            document.querySelectorAll('.sidebar-nav a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Gallery functionality
+            let currentGallery = [];
+            let currentIndex = 0;
+            
+            const galleryModal = document.getElementById('gallery-modal');
+            const galleryImage = document.getElementById('gallery-current-image');
+            const galleryCounter = document.getElementById('gallery-counter');
+            const galleryClose = document.getElementById('gallery-close');
+            const galleryPrev = document.getElementById('gallery-prev');
+            const galleryNext = document.getElementById('gallery-next');
+            const galleryThumbnails = document.getElementById('gallery-thumbnails');
+            
+            document.querySelectorAll('.content-image').forEach(image => {
+                image.addEventListener('click', function() {
+                    const galleryName = this.getAttribute('data-gallery');
+                    currentGallery = galleries[galleryName];
+                    currentIndex = 0;
+                    
+                    openGallery();
+                });
+            });
+            
+            function openGallery() {
+                updateGalleryImage();
+                createThumbnails();
+                galleryModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeGallery() {
+                galleryModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            
+            function updateGalleryImage() {
+                galleryImage.src = currentGallery[currentIndex];
+                galleryCounter.textContent = `${currentIndex + 1}/${currentGallery.length}`;
+                
+                // Update thumbnails active state
+                document.querySelectorAll('.gallery-thumbnail').forEach((thumb, index) => {
+                    if (index === currentIndex) {
+                        thumb.classList.add('active');
+                    } else {
+                        thumb.classList.remove('active');
+                    }
+                });
+            }
+            
+            function createThumbnails() {
+                galleryThumbnails.innerHTML = '';
+                
+                currentGallery.forEach((img, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = img;
+                    thumb.classList.add('gallery-thumbnail');
+                    if (index === currentIndex) {
+                        thumb.classList.add('active');
+                    }
+                    
+                    thumb.addEventListener('click', () => {
+                        currentIndex = index;
+                        updateGalleryImage();
+                    });
+                    
+                    galleryThumbnails.appendChild(thumb);
+                });
+            }
+            
+            galleryClose.addEventListener('click', closeGallery);
+            
+            galleryPrev.addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
+                updateGalleryImage();
+            });
+            
+            galleryNext.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % currentGallery.length;
+                updateGalleryImage();
+            });
+            
+            // Close gallery with escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeGallery();
+                }
+            });
+        });
+        
+        // Animation on scroll
+        function initAnimations() {
+            const animatedElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+    </script>
+</body>
+</html>
