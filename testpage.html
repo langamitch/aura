@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Armani Exchange — Art Direction | Giannantonio De Maldé</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @font-face {
+            font-family: 'Neue Montreal';
+            src: url('https://giannantoniodemalde.com/fonts/PPNeueMontreal-Book.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Neue Montreal';
+            src: url('https://giannantoniodemalde.com/fonts/PPNeueMontreal-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            font-family: 'Neue Montreal', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #000;
+            background-color: #fff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            letter-spacing: -0.01em;
+            padding: 40px 20px;
+        }
+
+        a {
+            color: #000;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            vertical-align: middle;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 60px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+
+        .menu {
+            display: flex;
+            gap: 30px;
+        }
+        
+        /* Menu Toggle for Mobile */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 24px;
+            height: 20px;
+            position: relative;
+            z-index: 200;
+        }
+        
+        .menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #000;
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle span:nth-child(1) {
+            top: 0;
+        }
+        
+        .menu-toggle span:nth-child(2) {
+            top: 9px;
+        }
+        
+        .menu-toggle span:nth-child(3) {
+            top: 18px;
+        }
+        
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg);
+            top: 9px;
+        }
+        
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg);
+            top: 9px;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: #fff;
+            padding: 120px 40px 40px;
+            transition: right 0.4s ease;
+            z-index: 150;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+        
+        .sidebar.active {
+            right: 0;
+        }
+        
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .sidebar-menu a {
+            font-size: 18px;
+            font-weight: 500;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar-menu a:hover {
+            padding-left: 5px;
+        }
+        
+        .sidebar-contact {
+            margin-top: 60px;
+        }
+        
+        .sidebar-contact h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-contact a {
+            display: block;
+            margin-bottom: 15px;
+            color: #777;
+            transition: color 0.2s ease;
+        }
+        
+        .sidebar-contact a:hover {
+            color: #000;
+        }
+        
+        .sidebar-social {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Project Detail Styles */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .project-header {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .project-title-section {
+            grid-column: 1 / 7;
+        }
+
+        .project-title {
+            font-size: 48px;
+            line-height: 1.1;
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            margin-bottom: 30px;
+        }
+
+        .project-category {
+            font-size: 18px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .project-description {
+            font-size: 18px;
+            line-height: 1.5;
+            max-width: 600px;
+        }
+
+        .project-meta {
+            grid-column: 9 / 13;
+        }
+
+        .meta-group {
+            margin-bottom: 30px;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 16px;
+        }
+
+        .project-hero {
+            width: 100%;
+            height: 80vh;
+            background-color: #f5f5f5;
+            margin-bottom: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .project-hero img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-content {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 60px;
+            margin-bottom: 100px;
+        }
+
+        .content-text {
+            grid-column: 3 / 11;
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 60px;
+        }
+
+        .content-image-full {
+            grid-column: 1 / -1;
+            margin-bottom: 60px;
+        }
+
+        .content-image-container {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            position: relative;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        .content-image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .content-image-split {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .split-image-left {
+            grid-column: 1 / 7;
+        }
+
+        .split-image-right {
+            grid-column: 7 / -1;
+        }
+
+        .next-project {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 80px 0;
+            border-top: 1px solid #eee;
+            margin-bottom: 60px;
+        }
+
+        .next-label {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .next-title {
+            font-size: 24px;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+
+        .next-arrow {
+            font-size: 24px;
+        }
+
+        /* Footer */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 40px 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-left {
+            max-width: 400px;
+        }
+
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .project-header {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .project-title-section,
+            .project-meta {
+                grid-column: 1 / -1;
+            }
+
+            .project-title {
+                font-size: 36px;
+            }
+
+            .project-content {
+                gap: 30px;
+            }
+
+            .content-text {
+                grid-column: 1 / -1;
+            }
+
+            .content-image-split {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .split-image-left,
+            .split-image-right {
+                grid-column: 1 / -1;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .menu {
+                display: none;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="/">Giannantonio De Maldé</a>
+        </div>
+        <nav class="menu">
+            <a href="/">Work</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+        </nav>
+        <button class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+    
+    <div class="sidebar">
+        <nav class="sidebar-menu">
+            <a href="/">Work</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+            <a href="/archive">Archive</a>
+            <a href="/press">Press</a>
+        </nav>
+        <div class="sidebar-contact">
+            <h3>Contact</h3>
+            <a href="mailto:hello@giannantoniodemalde.com">hello@giannantoniodemalde.com</a>
+            <a href="tel:+390123456789">+39 012 345 6789</a>
+            <div class="sidebar-social">
+                <a href="https://instagram.com" target="_blank">Instagram</a>
+                <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="project-header fade-in">
+            <div class="project-title-section">
+                <h1 class="project-title">Armani Exchange — Art Direction</h1>
+                <div class="project-category">Brand Identity</div>
+                <div class="project-description">
+                    A complete reinvention of the Armani Exchange visual identity, bringing a bold new direction to the brand while maintaining its iconic heritage. The project encompassed brand strategy, visual systems, and implementation across digital and physical touchpoints.
+                </div>
+            </div>
+            <div class="project-meta">
+                <div class="meta-group">
+                    <div class="meta-label">Client</div>
+                    <div class="meta-value">Armani Exchange</div>
+                </div>
+                <div class="meta-group">
+                    <div class="meta-label">Designer</div>
+                    <div class="meta-value">Giannantonio De Maldé</div>
+                </div>
+                <div class="meta-group">
+                    <div class="meta-label">Role</div>
+                    <div class="meta-value">Art Director, Lead Designer</div>
+                </div>
+                <div class="meta-group">
+                    <div class="meta-label">Date Completed</div>
+                    <div class="meta-value">November 2024</div>
+                </div>
+                <div class="meta-group">
+                    <div class="meta-label">Collaborators</div>
+                    <div class="meta-value">Marco Rossi, Sofia Bianchi</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-hero fade-in">
+            <img src="assets/images/img1.jpg" alt="Armani Exchange Brand Identity Hero Image">
+        </div>
+
+        <div class="project-content">
+            <div class="content-text fade-in">
+                <p>The challenge was to redefine Armani Exchange's visual identity while preserving its recognized heritage and appeal to a younger audience that values authenticity and bold expression. The solution was a comprehensive identity system that combines sharp minimalism with dynamic elements, creating a visual language that feels both timeless and contemporary.</p>
+                <br>
+                <p>Working closely with the Armani team, we developed a system that extends across all touchpoints—from packaging and retail environments to digital platforms and campaigns. The result is a cohesive yet flexible identity that reinforces the brand's position in the market while opening new creative possibilities.</p>
+            </div>
+
+            <div class="content-image-full fade-in">
+                <div class="content-image-container">
+                    <img src="/api/placeholder/1920/1080" alt="Brand Identity Overview">
+                </div>
+            </div>
+
+            <div class="content-text fade-in">
+                <p>The typography system was carefully crafted to balance legibility with character. We selected a custom variation of a grotesque sans-serif as the primary typeface, complemented by a sharp serif for editorial contexts. This pairing creates a distinctive voice that stands out in the competitive fashion landscape.</p>
+                <br>
+                <p>The color palette draws from Armani's heritage while introducing vibrant accents that bring energy to applications. Deep navy and warm gray serve as foundations, with strategic use of vermilion and sage green as accent colors that create visual interest and hierarchy.</p>
+            </div>
+
+            <div class="content-image-split">
+                <div class="split-image-left fade-in">
+                    <div class="content-image-container">
+                        <img src="/api/placeholder/800/600" alt="Typography System">
+                    </div>
+                </div>
+                <div class="split-image-right fade-in">
+                    <div class="content-image-container">
+                        <img src="/api/placeholder/800/600" alt="Color Palette">
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-text fade-in">
+                <p>For the digital experience, we created a design system that translates the brand identity into interactive elements. The website and mobile app feature clean layouts with bold typography, intuitive navigation, and engaging micro-interactions that enhance the user experience while reinforcing the brand personality.</p>
+                <br>
+                <p>The photography direction emphasizes authenticity and emotional connection, with a documentary-style approach that captures genuine moments and expressions. This strategy aligns with the brand's values and resonates with the target audience's desire for truthful representation.</p>
+            </div>
+
+            <div class="content-image-full fade-in">
+                <div class="content-image-container">
+                    <img src="/api/placeholder/1920/1080" alt="Digital Experience">
+                </div>
+            </div>
+            
+            <div class="content-text fade-in">
+                <p>The success of this project lies in its ability to honor Armani Exchange's heritage while pushing the brand forward. The new identity has been implemented across all touchpoints, receiving positive feedback from both the client and the audience. Sales have increased by 22% in the quarter following the rebrand, and engagement metrics on digital platforms show significant improvement.</p>
+                <br>
+                <p>This project demonstrates how thoughtful design can transform a brand's perception while maintaining its core values and recognition. The systematic approach ensures consistency across all applications while providing the flexibility needed for a global fashion brand to stay relevant in a rapidly changing market.</p>
+            </div>
+        </div>
+
+        <div class="next-project fade-in">
+            <div class="next-info">
+                <div class="next-label">Next Project</div>
+                <div class="next-title">Valentino — Digital Campaign</div>
+            </div>
+            <div class="next-arrow">→</div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-left">
+            <p>© 2025 Giannantonio De Maldé. All rights reserved.</p>
+        </div>
+        <div class="footer-right">
+            <a href="mailto:hello@giannantoniodemalde.com">hello@giannantoniodemalde.com</a>
+            <a href="https://instagram.com" target="_blank">Instagram</a>
+            <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fade in elements
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            // Intersection Observer for fade-in elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Stagger animations
+            setTimeout(() => {
+                document.querySelector('.project-header').classList.add('visible');
+            }, 200);
+            
+            setTimeout(() => {
+                document.querySelector('.project-hero').classList.add('visible');
+            }, 400);
+            
+            // Sidebar toggle functionality
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            
+            menuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+            
+            overlay.addEventListener('click', function() {
+                menuToggle.classList.remove('active');
+                sidebar.classList.remove('active');
+                this.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            // Close sidebar on window resize if it's open and window is large
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && sidebar.classList.contains('active')) {
+                    menuToggle.classList.remove('active');
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
