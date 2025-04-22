@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAYLOG</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #000;
+            transition: background-color 0.3s, color 0.3s;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        body.dark {
+            background-color: #222;
+            color: #fff;
+        }
+        
+        /* Custom cursor - hide on touch devices */
+        .custom-cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            pointer-events: none;
+            mix-blend-mode: difference;
+            background-color: white;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            display: none; /* Hidden by default, shown with JS if not touch device */
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 0 20px;
+        }
+        
+        .description {
+            font-size: 14px;
+            font-weight: 400;
+            color: #333;
+            max-width: 300px;
+        }
+        
+        body.dark .description {
+            color: #aaa;
+        }
+        
+        .about-link {
+            text-decoration: none;
+            color: #000;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        body.dark .about-link {
+            color: #fff;
+        }
+        
+        .logo {
+            font-size: 110px;
+            font-weight: 700;
+            letter-spacing: -2px;
+            text-align: center;
+            position: relative;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+        
+        .logo-dot {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #000;
+            border-radius: 50%;
+            top: 8%;
+            right: 16.5%;
+        }
+        
+        body.dark .logo-dot {
+            background-color: #fff;
+        }
+        
+        .title-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        
+        body.dark .title-bar {
+            border-color: #444;
+        }
+        
+        .title-label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .mode-toggle {
+            cursor: none;
+            text-decoration: none;
+            color: #000;
+            font-size: 14px;
+        }
+        
+        body.dark .mode-toggle {
+            color: #fff;
+        }
+        
+        .entry {
+            margin: 0;
+            padding: 20px 0;
+            border-bottom: 1px solid #ccc;
+            position: relative;
+        }
+        
+        .entry:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+        
+        body.dark .entry:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+        
+        body.dark .entry {
+            border-color: #444;
+        }
+        
+        .entry-date {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+        
+        body.dark .entry-date {
+            color: #aaa;
+        }
+        
+        .entry-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 42px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .entry-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
+        
+        .entry-text {
+            flex: 1;
+        }
+        
+        /* Entry images for mobile view */
+        .entry-image {
+            display: none; /* Hidden by default, shown in media query */
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            margin-left: 15px;
+        }
+        
+        /* Fixed image container for desktop view */
+        .fixed-image-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            z-index: -1;
+            display: none; /* Hidden by default, shown in media query */
+        }
+        
+        .fixed-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .fixed-image.active {
+            opacity: 1;
+        }
+        
+        /* Font size adjustments */
+        body.font-small .entry-title {
+            font-size: 36px;
+        }
+        
+        body.font-medium .entry-title {
+            font-size: 42px;
+        }
+        
+        body.font-large .entry-title {
+            font-size: 48px;
+        }
+        
+        /* Settings modal */
+        .settings-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 250px;
+            display: none;
+            z-index: 100;
+        }
+        
+        .settings-section {
+            margin-bottom: 20px;
+        }
+        
+        .settings-title {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        
+        .settings-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .settings-option {
+            padding: 5px 10px;
+            cursor: none;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        
+        .settings-option.active {
+            background-color: #555;
+        }
+        
+        .close-settings {
+            text-align: right;
+            cursor: none;
+            font-size: 20px;
+        }
+        
+        .custom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .grid-icon {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 2px;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .grid-item {
+            background-color: #fff;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Media Queries */
+        @media (max-width: 1024px) {
+            .fixed-image-container {
+                display: none !important; /* Never show on smaller screens */
+            }
+            
+            .entry-image {
+                display: block; /* Show inline images on smaller screens */
+            }
+            
+            .logo {
+                font-size: 80px;
+            }
+            
+            .logo-dot {
+                width: 12px;
+                height: 12px;
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .fixed-image-container {
+                display: block; /* Show fixed images on larger screens */
+            }
+            
+            .entry-image {
+                display: none; /* Hide inline images on larger screens */
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .entry-content {
+                flex-direction: row-reverse; /* Reverse order to show image on left */
+            }
+            
+            .entry-image {
+                margin-left: 0;
+                margin-right: 15px; /* Add margin to the right instead */
+            }
+            
+            .entry-title {
+                font-size: 32px;
+            }
+            
+            body.font-small .entry-title {
+                font-size: 28px;
+            }
+            
+            body.font-medium .entry-title {
+                font-size: 32px;
+            }
+            
+            body.font-large .entry-title {
+                font-size: 36px;
+            }
+            
+            .logo {
+                font-size: 60px;
+            }
+            
+            .container {
+                padding: 10px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .entry-title {
+                font-size: 24px;
+            }
+            
+            body.font-small .entry-title {
+                font-size: 20px;
+            }
+            
+            body.font-medium .entry-title {
+                font-size: 24px;
+            }
+            
+            body.font-large .entry-title {
+                font-size: 28px;
+            }
+            
+            .logo {
+                font-size: 40px;
+            }
+            
+            .entry-image {
+                width: 80px;
+                height: 60px;
+            }
+            
+            .description {
+                max-width: 200px;
+                font-size: 12px;
+            }
+        }
+        
+        /* Disable custom cursor on touch devices */
+        @media (pointer: coarse) {
+            * {
+                cursor: auto !important;
+            }
+            
+            .custom-cursor {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="font-medium">
+    <div class="custom-cursor"></div>
+    
+    <div class="container">
+        <header>
+            <div class="description">This is a place to record information about daily events, emotions.</div>
+            <a href="#" class="about-link">About</a>
+        </header>
+        
+        <div class="logo">
+            DAYLOG
+            <div class="logo-dot"></div>
+        </div>
+        
+        <div class="title-bar">
+            <div class="title-label">TITLE</div>
+            <a href="#" class="mode-toggle" id="imageMode">ImageMode</a>
+        </div>
+        
+        <div class="entry" data-image="anxiety">
+            <div class="entry-date">Apr 2, 2025</div>
+            <div class="entry-content">
+                <div class="entry-text">
+                    <h2 class="entry-title">Anxiety and behavior</h2>
+                </div>
+                <img class="entry-image" src="/api/placeholder/120/80?text=Anxiety" alt="Anxiety image">
+            </div>
+        </div>
+        
+        <div class="entry" data-image="awards">
+            <div class="entry-date">Mar 28, 2025</div>
+            <div class="entry-content">
+                <div class="entry-text">
+                    <h2 class="entry-title">Challenges to Overseas Awards and Recent Results</h2>
+                </div>
+                <img class="entry-image" src="/api/placeholder/120/80?text=Awards" alt="Awards and results image">
+            </div>
+        </div>
+        
+        <div class="entry" data-image="environment">
+            <div class="entry-date">Mar 28, 2025</div>
+            <div class="entry-content">
+                <div class="entry-text">
+                    <h2 class="entry-title">Changes in the environment and moving</h2>
+                </div>
+                <img class="entry-image" src="/api/placeholder/120/80?text=Environment" alt="Environment image">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fixed image container for desktop view -->
+    <div class="fixed-image-container">
+        <img class="fixed-image" id="anxiety-image" src="/api/placeholder/300/200?text=Anxiety" alt="Anxiety image">
+        <img class="fixed-image" id="awards-image" src="/api/placeholder/300/200?text=Awards" alt="Awards and results image">
+        <img class="fixed-image" id="environment-image" src="/api/placeholder/300/200?text=Environment" alt="Environment image">
+    </div>
+    
+    <div class="settings-modal" id="settingsModal">
+        <div class="close-settings" id="closeSettings">×</div>
+        
+        <div class="settings-section">
+            <div class="settings-title">(FontSize)</div>
+            <div class="settings-options">
+                <div class="settings-option" data-font="small">Small</div>
+                <div class="settings-option active" data-font="medium">Medium</div>
+                <div class="settings-option" data-font="large">Large</div>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <div class="settings-title">(SystemColor)</div>
+            <div class="settings-options">
+                <div class="settings-option active" data-theme="light">Light</div>
+                <div class="settings-option" data-theme="dark">Dark</div>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <div class="settings-title">(Custom)</div>
+            <div class="custom-row">
+                <div></div>
+                <div class="grid-icon">
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Detect if device is touch-enabled
+        function isTouchDevice() {
+            return (('ontouchstart' in window) ||
+                    (navigator.maxTouchPoints > 0) ||
+                    (navigator.msMaxTouchPoints > 0));
+        }
+        
+        // Custom cursor - only enable on non-touch devices
+        if (!isTouchDevice()) {
+            const cursor = document.querySelector('.custom-cursor');
+            cursor.style.display = 'block';
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = `${e.clientX}px`;
+                cursor.style.top = `${e.clientY}px`;
+            });
+        }
+        
+        // Check if we should use fixed image mode (for desktop) or inline images (for mobile)
+        function checkScreenSize() {
+            const isLargeScreen = window.innerWidth >= 1025;
+            const fixedImageContainer = document.querySelector('.fixed-image-container');
+            
+            if (isLargeScreen) {
+                fixedImageContainer.style.display = 'block';
+                
+                // Enable hover effects for fixed images
+                const entries = document.querySelectorAll('.entry');
+                entries.forEach(entry => {
+                    const imageType = entry.getAttribute('data-image');
+                    const image = document.getElementById(`${imageType}-image`);
+                    
+                    entry.addEventListener('mouseenter', () => {
+                        // Hide all images
+                        document.querySelectorAll('.fixed-image').forEach(img => {
+                            img.classList.remove('active');
+                        });
+                        
+                        // Show the current image
+                        image.classList.add('active');
+                    });
+                });
+                
+                // Initially show the first image
+                document.getElementById('awards-image').classList.add('active');
+            } else {
+                fixedImageContainer.style.display = 'none';
+            }
+        }
+        
+        // Run on load and resize
+        window.addEventListener('load', checkScreenSize);
+        window.addEventListener('resize', checkScreenSize);
+        
+        // Toggle settings modal
+        document.getElementById('imageMode').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('settingsModal').style.display = 'block';
+        });
+        
+        document.getElementById('closeSettings').addEventListener('click', function() {
+            document.getElementById('settingsModal').style.display = 'none';
+        });
+        
+        // Font size settings
+        const fontOptions = document.querySelectorAll('.settings-option[data-font]');
+        fontOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                fontOptions.forEach(opt => opt.classList.remove('active'));
+                // Add active class to clicked option
+                this.classList.add('active');
+                
+                // Remove all font classes
+                document.body.classList.remove('font-small', 'font-medium', 'font-large');
+                // Add selected font class
+                document.body.classList.add('font-' + this.dataset.font);
+            });
+        });
+        
+        // Theme settings
+        const themeOptions = document.querySelectorAll('.settings-option[data-theme]');
+        themeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                themeOptions.forEach(opt => opt.classList.remove('active'));
+                // Add active class to clicked option
+                this.classList.add('active');
+                
+                // Set theme
+                if (this.dataset.theme === 'dark') {
+                    document.body.classList.add('dark');
+                } else {
+                    document.body.classList.remove('dark');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
